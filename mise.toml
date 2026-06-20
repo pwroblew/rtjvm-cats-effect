@@ -1,0 +1,5 @@
+[tools]
+java = "21"
+"asdf:mise-plugins/mise-sbt" = "1.12.11"
+scala = "3.8.3"
+
