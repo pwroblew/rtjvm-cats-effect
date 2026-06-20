@@ -1,6 +1,6 @@
 package com.rockthejvm.part1recap
 
-import java.util.concurrent.Executors
+import java.util.concurrent.{ExecutorService, Executors}
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -76,7 +76,8 @@ object Essentials {
   }
 
   // Futures
-  implicit val ec: ExecutionContext = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(8))
+  private val executorService: ExecutorService = Executors.newFixedThreadPool(8)
+  implicit val ec: ExecutionContext = ExecutionContext.fromExecutorService(executorService)
   val aFuture = Future {
     // a bit of code
     42
@@ -84,8 +85,13 @@ object Essentials {
 
   // wait for completion (async)
   aFuture.onComplete {
-    case Success(value) => println(s"The async meaning of life is $value")
-    case Failure(exception) => println(s"Meaning of value failed: $exception")
+    case Success(value) =>
+      println(s"The async meaning of life is $value")
+      executorService.shutdown()
+    case Failure(exception) =>
+      println(s"Meaning of value failed: $exception")
+      executorService.shutdown()
+
   }
 
   // map a Future

@@ -31,8 +31,12 @@ object L01_Essentials {
     }
 
     aFuture1.onComplete {
-      case Success(value) => println(s"Success1: $value")
-      case Failure(exception) => println(s"Failure1: $exception")
+      case Success(value) =>
+        threadPool.shutdown()
+        println(s"Success1: $value")
+      case Failure(exception) =>
+        threadPool.shutdown()
+        println(s"Failure1: $exception")
     }
 
     aFuture1.failed.map(exception => println(s"AAA Failure1: $exception"))

@@ -1,4 +1,4 @@
-val scala3Version = "3.3.2"
+val scala3Version = "3.8.3"
 
 lazy val root = project
   .in(file("."))
@@ -9,6 +9,6 @@ lazy val root = project
     scalaVersion := scala3Version,
 
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-effect" % "3.6.3",
+      "org.typelevel" %% "cats-effect" % "3.7.0",
     )
   )
