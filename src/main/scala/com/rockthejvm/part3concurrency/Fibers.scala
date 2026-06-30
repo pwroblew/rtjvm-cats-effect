@@ -12,19 +12,19 @@ object Fibers extends IOApp.Simple {
   import com.rockthejvm.utils._
 
   def sameThreadIOs() = for {
-    _ <- meaningOfLife.debug
-    _ <- favLang.debug
+    _ <- meaningOfLife.debugD
+    _ <- favLang.debugD
   } yield ()
 
   // introducing Fiber: a data structure describing an effect running on some thread
   def createFiber: Fiber[IO, Throwable, String] = ??? // almost impossible to create fibers manually
 
   // the fiber is not actually started, but the fiber allocation is wrapped in another effect
-  val aFiber: IO[Fiber[IO, Throwable, Int]] = meaningOfLife.debug.start
+  val aFiber: IO[Fiber[IO, Throwable, Int]] = meaningOfLife.debugD.start
 
   def differentThreadIOs() = for {
     _ <- aFiber
-    _ <- favLang.debug
+    _ <- favLang.debugD
   } yield ()
 
   // joining a fiber
@@ -52,18 +52,18 @@ object Fibers extends IOApp.Simple {
   } yield result
 
   def testCancel() = {
-    val task = IO("starting").debug >> IO.sleep(1.second) >> IO("done").debug
+    val task = IO("starting").debugD >> IO.sleep(1.second) >> IO("done").debugD
     // onCancel is a "finalizer", allowing you to free up resources in case you get canceled
-    val taskWithCancellationHandler = task.onCancel(IO("I'm being cancelled!").debug.void)
+    val taskWithCancellationHandler = task.onCancel(IO("I'm being cancelled!").debugD.void)
 
     for {
       fib <- taskWithCancellationHandler.start // on a separate thread
-      _ <- IO.sleep(500.millis) >> IO("cancelling").debug // running on the calling thread
+      _ <- IO.sleep(500.millis) >> IO("cancelling").debugD // running on the calling thread
       _ <- fib.cancel
       result <- fib.join
     } yield result
   }
-
+  
 
   /**
    * Exercises:
