@@ -14,8 +14,8 @@ object Resources extends IOApp.Simple {
 
   // use-case: manage a connection lifecycle
   class Connection(url: String) {
-    def open(): IO[String] = IO(s"opening connection to $url").debug
-    def close(): IO[String] = IO(s"closing connection to $url").debug
+    def open(): IO[String] = IO(s"opening connection to $url").debugD
+    def close(): IO[String] = IO(s"closing connection to $url").debugD
   }
 
   val asyncFetchUrl = for {
@@ -53,7 +53,7 @@ object Resources extends IOApp.Simple {
     IO(new Scanner(new FileReader(new File(path))))
 
   def readLineByLine(scanner: Scanner): IO[Unit] =
-    if (scanner.hasNextLine) IO(scanner.nextLine()).debug >> IO.sleep(100.millis) >> readLineByLine(scanner)
+    if (scanner.hasNextLine) IO(scanner.nextLine()).debugD >> IO.sleep(100.millis) >> readLineByLine(scanner)
     else IO.unit
 
   def bracketReadFile(path: String): IO[Unit] =
@@ -61,7 +61,7 @@ object Resources extends IOApp.Simple {
       openFileScanner(path).bracket { scanner =>
         readLineByLine(scanner)
       } { scanner =>
-        IO(s"closing file at $path").debug >> IO(scanner.close())
+        IO(s"closing file at $path").debugD >> IO(scanner.close())
       }
 
   /**
