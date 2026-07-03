@@ -12,11 +12,11 @@ object RacingIOs extends IOApp.Simple {
 
   def runWithSleep[A](value: A, duration: FiniteDuration): IO[A] =
     (
-      IO(s"starting computation: $value").debug >>
+      IO(s"starting computation: $value").debugD >>
       IO.sleep(duration) >>
       IO(s"computation for $value: done") >>
       IO(value)
-    ).onCancel(IO(s"computation CANCELED for $value").debug.void)
+    ).onCancel(IO(s"computation CANCELED for $value").debugD.void)
 
   def testRace() = {
     val meaningOfLife = runWithSleep(42, 1.second)
@@ -43,8 +43,8 @@ object RacingIOs extends IOApp.Simple {
     ]] = IO.racePair(meaningOfLife, favLang)
 
     raceResult.flatMap {
-      case Left((outMol, fibLang)) => fibLang.cancel >> IO("MOL won").debug >> IO(outMol).debug
-      case Right((fibMol, outLang)) => fibMol.cancel >> IO("Language won").debug >> IO(outLang).debug
+      case Left((outMol, fibLang)) => fibLang.cancel >> IO("MOL won").debugD >> IO(outMol).debugD
+      case Right((fibMol, outLang)) => fibMol.cancel >> IO("Language won").debugD >> IO(outLang).debugD
     }
   }
 
@@ -65,7 +65,7 @@ object RacingIOs extends IOApp.Simple {
     }
   }
 
-  val importantTask = IO.sleep(2.seconds) >> IO(42).debug
+  val importantTask = IO.sleep(2.seconds) >> IO(42).debugD
   val testTimeout = timeout(importantTask, 1.seconds)
   val testTimeout_v2 = importantTask.timeout(1.seconds)
 
@@ -107,5 +107,5 @@ object RacingIOs extends IOApp.Simple {
       }
     }
 
-  override def run = testRace().debug.void
+  override def run = testRace().debugD.void
 }
