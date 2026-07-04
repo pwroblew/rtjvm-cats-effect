@@ -39,7 +39,7 @@ object IOTraversal extends IOApp.Simple {
   def computeAsIO(string: String): IO[Int] = IO {
     Thread.sleep(Random.nextInt(1000))
     string.split(" ").length
-  }.debug
+  }.debugD
 
   val ios: List[IO[Int]] = workLoad.map(computeAsIO)
   val singleIO: IO[List[Int]] = listTraverse.traverse(workLoad)(computeAsIO)
@@ -75,5 +75,5 @@ object IOTraversal extends IOApp.Simple {
   val parallelSingleIO_v3: IO[List[Int]] = ios.parSequence // extension method from the Parallel syntax package
 
   override def run =
-    parallelSingleIO_v3.map(_.sum).debug.void
+    parallelSingleIO_v3.map(_.sum).debugD.void
 }
