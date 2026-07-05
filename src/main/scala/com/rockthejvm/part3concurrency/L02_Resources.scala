@@ -141,10 +141,10 @@ object L02_Resources extends IOApp.Simple {
   } yield ()
 
   val ioFinalizers: IO[Unit] = {
-    IO("some resource").debug2.guarantee(IO.println("finzlizer 1!")).void
-    IO.raiseError[Unit](
-      new RuntimeException("FATAL ERROR")
-    ).guarantee(IO.println("finzlizer 2!")).void
+    IO("some resource").debug2.guarantee(IO.println("finzlizer 1!")).void >>
+      IO.raiseError[Unit](
+        new RuntimeException("FATAL ERROR")
+      ).guarantee(IO.println("finzlizer 2!")).void
   }
 
   override def run: IO[Unit] = for {
